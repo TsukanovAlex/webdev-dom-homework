@@ -1,15 +1,73 @@
 "use strict";
 
 // Импорт данных из модулей
-import { elementName, elementComment, DateFormatComment, loadingCommentElement, addFormElement, comments, buttonElement } from './script.js'
-import { renderComments } from './render.js'
+import {  DateFormatComment, comments, isPosting } from './script.js'
+import { renderComments } from './render.js';
+
+
+// Адерес сервера 
+
+const hostV1 = 'https://wedev-api.sky.pro/api';
+const hostV2 = 'https://wedev-api.sky.pro/api/v2/alexey-tsukanov/comments';
+
+
+let token = 'Bearer asb4c4boc86gasb4c4boc86g37w3cc3bo3b83k4g37k3bk3cg3c03ck4k';
+token = null;
+
+
+// Функция позволяющая изменять переменную токен в других модулях прилоения
+export const setToken = (newToken) => {
+   token = newToken;
+};
+
+export const getToken = () => {
+  return token
+};
+
+//Функция входа по логину 
+export const loginUser = (login, password) => {
+return fetch(
+  `${hostV1}/user/login`,
+  {
+    method: "POST",
+    body: JSON.stringify({
+      login,
+      password
+    })
+  }
+).then((response) => {
+  return response.json()
+})
+}
+
+// функция регистрации юзера
+export const regUser = (login, password, name) => {
+  return fetch(
+    `${hostV1}/user`,
+    {
+      method: "POST",
+      body: JSON.stringify({
+        login,
+        password,
+        name,
+      })
+    }
+  ).then((response) => {
+    return response.json()
+  })
+  }
 
 //  Получаем данные из API(Сервера)
-function fetchAndRenderComments() {
+export const fetchAndRenderComments =() =>  {
+  const headers = token ? {
+    Authorization: `Bearer ${token}`,
+  } : {};
+
   return fetch(
-    'https://wedev-api.sky.pro/api/v1/alexey-tsukanov/comments',
+    hostV2,
     {
-      method: 'GET'
+      method: 'GET',
+      headers
     })
     .then((response) => {
       convertServer(response, comments)
@@ -33,8 +91,8 @@ const convertServer = (response, commentsArr) => {
 }
 
 // Фукнция поторного вызова в случае ошибки от сервера
-const postComment = () => {
-
+export const postComment = () => {
+  
   // Защащаем ввод данных
   const protectionHtml = (string) => {
     return string
@@ -45,15 +103,19 @@ const postComment = () => {
   };
 
   // Добавляем новый комменрарий в API
+  const elementComment = document.getElementById('commentInput');
+  const elementName = document.getElementById('nameInput');
   return fetch(
-    'https://wedev-api.sky.pro/api/v1/alexey-tsukanov/comments',
+    hostV2,
     {
       method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify(
         {
           text: protectionHtml(elementComment.value),
           name: protectionHtml(elementName.value),
-          forceError: true,
         })
     })
     .then((response) => {
@@ -61,7 +123,8 @@ const postComment = () => {
         elementName.classList.remove('error');
         elementComment.classList.remove('error');
         return response.json()
-      } if (response.status === 400) {
+      } 
+      if (response.status === 400) {
         throw new Error("Плохой запрос")
       } else {
         throw new Error('Сервер не отвечает')
@@ -70,12 +133,9 @@ const postComment = () => {
     .then(() => {
       elementName.value = '';
       elementComment.value = '';
-      buttonElement.disabled = true;
       fetchAndRenderComments();
     })
     .catch((error) => {
-      loadingCommentElement.style.display = 'none';
-      addFormElement.style.display = 'flex';
       if (error.message === "Плохой запрос") {
         elementComment.classList.add('error');
         elementName.classList.add('error');
@@ -87,5 +147,3 @@ const postComment = () => {
     })
 };
 
-// Экспорт данных в модули
-export { fetchAndRenderComments, postComment };
