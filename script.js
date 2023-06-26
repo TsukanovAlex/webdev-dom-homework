@@ -20,9 +20,6 @@ const DateFormatComment = (commentDate) => {
   return formatDate
 }
 
-
-
-
 fetchAndRenderComments();
 
 console.log("It works!");
