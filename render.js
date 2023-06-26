@@ -1,7 +1,7 @@
 "use strict";
 
-import { getToken, loginUser, regUser, setToken, postComment} from "./api.js";
-import {like, initAnswer} from './option.js'
+import { getToken, loginUser, regUser, setToken, postComment } from "./api.js";
+import { like, initAnswer } from './option.js'
 
 
 
@@ -13,7 +13,8 @@ const sendComment = () => {
 }
 // создаем рендер фукцию для добавления разметки html из JS
 export const renderComments = (commentsArr, appHtml, user) => {
-  let isloginemode = true;
+  let isLoginMode = true;
+
   // переменная надписи об авторизации
   const goToAuthHtml = `<div>
 <p class"auth-text">Чтобы добавить комментарий, 
@@ -77,26 +78,26 @@ ${commentsHtml}
     renderLoginform();
   })
 
-  
+
   // обработчик клика кнопки "Войти"
   const renderLoginform = () => {
     appEl.innerHTML = `<div class="login-form" id="addForm">
-  <h2 class="comment-text">${isloginemode ? "Авторизация" : "Регистрация"}</h2>
-   ${isloginemode ? '' : `<input type="text" class="add-form-login-password" placeholder="Введите ваше имя" id="nameInput" value="" />`}
+  <h2 class="comment-text">${isLoginMode ? "Авторизация" : "Регистрация"}</h2>
+   ${isLoginMode ? '' : `<input type="text" class="add-form-login-password" placeholder="Введите ваше имя" id="nameInput" value="" />`}
 
   <input type="text" class="add-form-login-password" placeholder="Введите ваше логин" id="loginInput" value="" /> 
 
   <input type="password" class="add-form-login-password" placeholder="Введите Ваш пароль" id="passwordInput" value=""/>
   
   <div class="add-form-row">
-    <button class="buttonLogin" id="buttonLogin">${isloginemode ? 'Войти' : 'Зарегистрироваться'}</button>
+    <button class="buttonLogin" id="buttonLogin">${isLoginMode ? 'Войти' : 'Зарегистрироваться'}</button>
   </div>
-  <a href='#' style="text-decoration: underline;" class="comment-text" id="toggleLink">${isloginemode ? 'Зарегистрироваться' : "Войти"}</a>
+  <a href='#' style="text-decoration: underline;" class="comment-text" id="toggleLink">${isLoginMode ? 'Зарегистрироваться' : "Войти"}</a>
   </div>`
 
     const toggleButtonEl = document.getElementById('toggleLink')
     toggleButtonEl.addEventListener('click', () => {
-      isloginemode = !isloginemode;
+      isLoginMode = !isLoginMode;
       renderLoginform();
     });
 
@@ -108,10 +109,10 @@ ${commentsHtml}
       const password = document.getElementById('passwordInput').value;
 
 
-      if (isloginemode) {
+      if (isLoginMode) {
         loginUser(login, password).then((response) => {
           setToken(response.user.token);
-          renderComments(commentsArr, appHtml, user);
+          renderComments(commentsArr, appHtml, response.user.name);
           sendComment()
         })
       } else {
@@ -119,13 +120,13 @@ ${commentsHtml}
         regUser(login, password, name)
           .then((response) => {
             setToken(response.user.token);
-            renderComments(commentsArr, appHtml, user);
-            sendComment()
+            renderComments(commentsArr, appHtml, response.user.name);
+            sendComment();
           })
       }
     })
   }
 
-like(commentsArr)
-initAnswer()
+  like(commentsArr)
+  initAnswer()
 }

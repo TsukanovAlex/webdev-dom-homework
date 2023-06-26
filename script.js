@@ -1,17 +1,13 @@
 "use strict";
 
 // Импорт данных из модулей
-import { renderComments } from './render.js'
-import { fetchAndRenderComments, postComment } from './api.js';
+import { fetchAndRenderComments } from './api.js';
 
 
 //  Массив в который будем рендерить полученные данные
 let comments = [];
 
 export let isPosting = false;
-
-// Убираем обработчик загрузки с экрана
-// loadingCommentElement.style.display = 'none';
 
 // Функция обработчика даты
 const DateFormatComment = (commentDate) => {
@@ -23,9 +19,6 @@ const DateFormatComment = (commentDate) => {
     dateComment.getMinutes().toString().padStart(2, '0');
   return formatDate
 }
-
-
-
 
 fetchAndRenderComments();
 
