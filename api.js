@@ -1,7 +1,7 @@
 "use strict";
 
 // Импорт данных из модулей
-import {  DateFormatComment, comments, isPosting } from './script.js'
+import { DateFormatComment, comments, isPosting } from './script.js'
 import { renderComments } from './render.js';
 
 
@@ -17,7 +17,7 @@ token = null;
 
 // Функция позволяющая изменять переменную токен в других модулях прилоения
 export const setToken = (newToken) => {
-   token = newToken;
+  token = newToken;
 };
 
 export const getToken = () => {
@@ -26,18 +26,18 @@ export const getToken = () => {
 
 //Функция входа по логину 
 export const loginUser = (login, password) => {
-return fetch(
-  `${hostV1}/user/login`,
-  {
-    method: "POST",
-    body: JSON.stringify({
-      login,
-      password
-    })
-  }
-).then((response) => {
-  return response.json()
-})
+  return fetch(
+    `${hostV1}/user/login`,
+    {
+      method: "POST",
+      body: JSON.stringify({
+        login,
+        password
+      })
+    }
+  ).then((response) => {
+    return response.json()
+  })
 }
 
 // функция регистрации юзера
@@ -55,10 +55,10 @@ export const regUser = (login, password, name) => {
   ).then((response) => {
     return response.json()
   })
-  }
+}
 
 //  Получаем данные из API(Сервера)
-export const fetchAndRenderComments =() =>  {
+export const fetchAndRenderComments = () => {
   const headers = token ? {
     Authorization: `Bearer ${token}`,
   } : {};
@@ -92,7 +92,7 @@ const convertServer = (response, commentsArr) => {
 
 // Фукнция поторного вызова в случае ошибки от сервера
 export const postComment = () => {
-  
+
   // Защащаем ввод данных
   const protectionHtml = (string) => {
     return string
@@ -123,7 +123,7 @@ export const postComment = () => {
         elementName.classList.remove('error');
         elementComment.classList.remove('error');
         return response.json()
-      } 
+      }
       if (response.status === 400) {
         throw new Error("Плохой запрос")
       } else {

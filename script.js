@@ -1,7 +1,7 @@
 "use strict";
 
 // Импорт данных из модулей
-import { fetchAndRenderComments} from './api.js';
+import { fetchAndRenderComments } from './api.js';
 
 
 //  Массив в который будем рендерить полученные данные
