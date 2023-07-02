@@ -1,8 +1,9 @@
 "use strict";
 
 // Импорт данных из модулей
-import { DateFormatComment, comments, isPosting } from './script.js'
+import { comments } from './script.js'
 import { renderComments } from './render.js';
+import { format } from "date-fns"
 
 
 // Адерес сервера 
@@ -78,9 +79,10 @@ const convertServer = (response, commentsArr) => {
   return response.json().then((responseData) => {
     commentsArr = responseData.comments;
     commentsArr = commentsArr.map((comment) => {
+      const DateFormatComment = format(new Date(comment.date), 'dd/MM/yyyy hh:mm');
       return {
         name: comment.author.name,
-        date: DateFormatComment(comment.date),
+        date: DateFormatComment,
         textComment: comment.text,
         likes: comment.likes,
         isActiveLike: false,
